@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">JavaWeather</string>
+    <string name="bu">Button</string>
+    <string name="bu1">button</string>
 </resources>

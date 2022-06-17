@@ -1,8 +1,12 @@
-package com.example.javaweather;
+package com.example.javaweather.Contoller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.javaweather.Model.GetApiValueToArray;
 
 import android.os.Bundle;
+import android.util.Log;
+
+import com.example.javaweather.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -10,5 +14,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GetApiValueToArray a = new GetApiValueToArray();
+
+
     }
 }
