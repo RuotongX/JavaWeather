@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+
 
 
 public class GetApiValueToArray {
@@ -25,10 +27,12 @@ public class GetApiValueToArray {
 
     public GetApiValueToArray(){
         StringBuilder json = new StringBuilder();
+        CountDownLatch cdl = new CountDownLatch(1);
         new Thread(() -> {
             try {
                 URL urlObject = new URL(url);
                 URLConnection uc = urlObject.openConnection();
+                uc.setConnectTimeout(5000);
                 BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
                 String inputLine = null;
                 while ( (inputLine = in.readLine()) != null) {
@@ -39,7 +43,15 @@ public class GetApiValueToArray {
                 e.printStackTrace();
             }
             temp =  json.toString();
+            cdl.countDown();
         }).start();
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Log.d(temp,"important         message");
     }
 
     public String getTemp() {
