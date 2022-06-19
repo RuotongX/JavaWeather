@@ -12,11 +12,12 @@ public class Weather {
     private String date;
     private String time;
     private String icon;
+    private String address;
 
 
     public String getTemp() {
         int t = (int)Math.round(temp);
-        String result = String.valueOf(t);
+        String result = String.valueOf(t)+"°C";
         return result;
     }
 
@@ -65,25 +66,31 @@ public class Weather {
     }
 
     public void setIcon(String icon) {
-        if(icon.equals("01d")||
-                icon.equals("01n")||
-                icon.equals("02d")||
-                icon.equals("02n")||
-                icon.equals("03d")||
-                icon.equals("03n")||
-                icon.equals("09d")||
-                icon.equals("09n")||
-                icon.equals("10d")||
-                icon.equals("10n")||
-                icon.equals("11d")||
-                icon.equals("11n")||
-                icon.equals("12d")||
-                icon.equals("12n")||
-                icon.equals("50d")||
-                icon.equals("50n")) {
-            this.icon = icon;
-        } else {
-            this.icon = "03d";
+        switch(icon) {
+            case "01d":
+                this.icon = "d01.png";
+            case "01n":
+                this.icon = "n01.png";
+            case "02d":
+                this.icon = "d02.png";
+            case "02n":
+                this.icon = "n02.png";
+            case "10d":
+                this.icon = "d10.png";
+            case "10n":
+                this.icon = "n10.png";
+            case "03d":
+                this.icon = "d03.png";
+            case "09d":
+                this.icon = "d09.png";
+            case "11d":
+                this.icon = "d11.png";
+            case "13d":
+                this.icon = "d13.png";
+            case "50d":
+                this.icon = "d50.png";
+            default:
+                this.icon = "d03.png";
         }
     }
 
@@ -96,5 +103,13 @@ public class Weather {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
         sdf.setTimeZone(TimeZone.getDefault());
         this.date = sdf.format(d);
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
