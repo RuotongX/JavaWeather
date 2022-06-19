@@ -1,35 +1,17 @@
 package com.example.javaweather.Contoller;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.javaweather.Model.GetApiValueToArray;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.javaweather.Model.Weather;
 import com.example.javaweather.R;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Weather> weatherList;
@@ -43,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        GetApiValueToArray a = new GetApiValueToArray();
         recyclerView = findViewById(R.id.recyclerView);
-        address = findViewById(R.id.address);
-        temperature = findViewById(R.id.temp);
+        address = findViewById(R.id.date);
+        temperature = findViewById(R.id.feelstemp);
         weatherCondition = findViewById(R.id.weather);
         weatherList = new ArrayList<>();
 

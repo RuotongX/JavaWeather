@@ -27,7 +27,7 @@ public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.
 
         public MyViewHolder(final View view){
             super(view);
-            dateTxt = view.findViewById(R.id.Coldate);
+            dateTxt = view.findViewById(R.id.Colhour);
             tempTxt = view.findViewById(R.id.Coltemp);
             weatherIcon = view.findViewById(R.id.Colimg);
         }

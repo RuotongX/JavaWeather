@@ -7,12 +7,12 @@
     android:background="#17040101">
 
     <TextView
-        android:id="@+id/Coldate"
+        android:id="@+id/Colhour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="06-15"
         android:textColor="#DDFFFFFF"
-        android:textSize="25sp"
+        android:textSize="20sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="13°C"
         android:textColor="#DDFFFFFF"
-        android:textSize="25sp"
+        android:textSize="20sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/Colimg"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"

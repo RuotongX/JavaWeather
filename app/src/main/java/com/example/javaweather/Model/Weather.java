@@ -13,6 +13,7 @@ public class Weather {
     private String time;
     private String icon;
     private String address;
+    private int humidity;
 
 
     public String getTemp() {
@@ -111,5 +112,13 @@ public class Weather {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 }
