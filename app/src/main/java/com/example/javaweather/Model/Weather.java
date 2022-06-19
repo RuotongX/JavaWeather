@@ -14,8 +14,10 @@ public class Weather {
     private String icon;
 
 
-    public double getTemp() {
-        return temp;
+    public String getTemp() {
+        int t = (int)Math.round(temp);
+        String result = String.valueOf(t);
+        return result;
     }
 
     public void setTemp(double temp) {
