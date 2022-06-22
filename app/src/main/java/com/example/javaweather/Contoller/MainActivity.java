@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.javaweather.Model.Weather;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Weather> weatherList;
+    private ArrayList<Weather> daysForcast =  new ArrayList<>();;
     private RecyclerView recyclerView;
     private TextView address, temperature, weatherCondition;
 
@@ -28,15 +30,20 @@ public class MainActivity extends AppCompatActivity {
         address = findViewById(R.id.date);
         temperature = findViewById(R.id.feelstemp);
         weatherCondition = findViewById(R.id.weather);
-        weatherList = new ArrayList<>();
 
+
+        weatherList = new ArrayList<>();
         createWeather();
+        getDaysWeather();
+
+        temperature.setText(daysForcast.get(0).getTemp());
+        weatherCondition.setText(daysForcast.get(0).getWeather());
         setAdapter();
 
     }
 
     private void setAdapter() {
-        recyclerAdapterDay adapter = new recyclerAdapterDay(weatherList);
+        recyclerAdapterDay adapter = new recyclerAdapterDay(daysForcast);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -44,15 +51,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createWeather() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 40; i++) {
             Weather w = new Weather();
             w.setWeather("Sunny");
-            w.setDate(1655650800 + i * 86400);
+            w.setDate(1655650800 + i * 10800);
             w.setTemp(283.56 + i * 2);
             w.setDescription("meo");
             w.setFeels(281.36 + i * 2);
             w.setIcon("d01.png");
+            w.setDescription("Mainly sunny");
+            w.setHumidity(58);
             weatherList.add(w);
+        }
+
+    }
+    public void getDaysWeather(){
+        String preDate = weatherList.get(0).getDate();
+        Weather firstday = new Weather(weatherList.get(0).getDate(),weatherList.get(0).getIcon(),weatherList.get(0).getWeather(),weatherList.get(0).getTemp());
+        daysForcast.add(firstday);
+        for (int i = 1; i<weatherList.size();i++){
+            if(!preDate.equals(weatherList.get(i).getDate())){
+                Weather day = new Weather(weatherList.get(i).getDate(),weatherList.get(i).getIcon(),weatherList.get(i).getWeather(),weatherList.get(i).getTemp());
+                daysForcast.add(day);
+                Log.d("Program message",preDate);
+            }
+            preDate = weatherList.get(i).getDate();
         }
 
     }

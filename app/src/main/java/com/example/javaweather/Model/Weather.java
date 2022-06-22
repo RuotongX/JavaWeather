@@ -5,35 +5,37 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 public class Weather {
-    private double temp;
-    private double feels;
+    private String temp;
+    private String feels;
     private String weather;
     private String description;
     private String date;
     private String time;
     private String icon;
     private String address;
-    private int humidity;
+    private String humidity;
 
 
     public String getTemp() {
-        int t = (int)Math.round(temp);
-        String result = String.valueOf(t)+"°C";
-        return result;
+        return temp;
     }
 
     public void setTemp(double temp) {
-        this.temp = temp - 273.15;
+        int t = (int)Math.round(temp - 273.15);
+        String result = String.valueOf(t)+"°C";
+        this.temp = result;
     }
 
-    public double getFeels() {
+    public String getFeels() {
+
         return feels;
     }
 
     public void setFeels(double feels) {
-        this.feels = feels - 273.15;
+        int t = (int)Math.round(feels - 273.15);
+        String result = String.valueOf(t)+"°C";
+        this.feels = result;
     }
-
 
     public String getWeather() {
         return weather;
@@ -114,11 +116,31 @@ public class Weather {
         this.address = address;
     }
 
-    public int getHumidity() {
+    public String getHumidity() {
         return humidity;
     }
 
     public void setHumidity(int humidity) {
+        this.humidity = humidity+"%";
+    }
+
+    public Weather(String date,String icon, String weather,String temp){
+        this.icon =icon;
+        this.date = date;
+        this.weather = weather;
+        this.temp = temp;
+    }
+    public Weather(){
+
+    }
+    public Weather(String time,String date,String icon, String weather,String temp,String feels,String description,String humidity){
+        this.icon =icon;
+        this.date = date;
+        this.weather = weather;
+        this.temp = temp;
+        this.feels = feels;
+        this.description = description;
+        this.time = time;
         this.humidity = humidity;
     }
 }
