@@ -62,8 +62,7 @@ public class GetApiValueToArray {
 
     public ArrayList<Weather> getDaysWeather(){
         String preDate = weatherForcast.get(0).getDate();
-        Weather firstday = new Weather(weatherForcast.get(0).getDate(),weatherForcast.get(0).getIcon(),weatherForcast.get(0).getWeather(),weatherForcast.get(0).getTemp());
-        daysForcast.add(firstday);
+
         for (int i = 0; i<weatherForcast.size();i++){
             if(!preDate.equals(weatherForcast.get(i).getDate())){
                 Weather day = new Weather(weatherForcast.get(i).getDate(),weatherForcast.get(i).getIcon(),weatherForcast.get(i).getWeather(),weatherForcast.get(i).getTemp());
@@ -77,20 +76,21 @@ public class GetApiValueToArray {
         String preDate = weatherForcast.get(0).getDate();
         ArrayList<Weather> dayStorge = new ArrayList<Weather>();
         for (int i = 0; i<weatherForcast.size();i++){
-            if(preDate.equals(weatherForcast.get(i).getDate())){
-                Weather day = new Weather(weatherForcast.get(i).getTime(),
-                        weatherForcast.get(i).getDate(),
-                        weatherForcast.get(i).getIcon(),
-                        weatherForcast.get(i).getWeather(),
-                        weatherForcast.get(i).getTemp(),
-                        weatherForcast.get(i).getFeels(),
-                        weatherForcast.get(i).getDescription(),
-                        weatherForcast.get(i).getHumidity());
-                dayStorge.add(day);
-            } else{
-                hoursForcast.add(dayStorge);
+            if(!preDate.equals(weatherForcast.get(i).getDate())&&dayStorge.size()!=0){
+                ArrayList<Weather> Storge = new ArrayList<>();
+                Storge.addAll(dayStorge);
+                hoursForcast.add(Storge);
                 dayStorge.clear();
             }
+            Weather day = new Weather(weatherForcast.get(i).getTime(),
+                    weatherForcast.get(i).getDate(),
+                    weatherForcast.get(i).getIcon(),
+                    weatherForcast.get(i).getWeather(),
+                    weatherForcast.get(i).getTemp(),
+                    weatherForcast.get(i).getFeels(),
+                    weatherForcast.get(i).getDescription(),
+                    weatherForcast.get(i).getHumidity());
+            dayStorge.add(day);
             preDate = weatherForcast.get(i).getDate();
         }
         return hoursForcast;

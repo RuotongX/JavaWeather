@@ -1,10 +1,11 @@
 package com.example.javaweather.Model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-public class Weather {
+public class Weather implements Serializable {
     private String temp;
     private String feels;
     private String weather;

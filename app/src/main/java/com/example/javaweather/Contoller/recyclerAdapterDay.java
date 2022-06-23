@@ -16,7 +16,7 @@ public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.
     private ArrayList<Weather> weatherList;
 
     public recyclerAdapterDay(ArrayList<Weather> weatherList){
-        weatherList.remove(0);
+
         this.weatherList = weatherList;
     }
 
@@ -27,9 +27,9 @@ public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.
 
         public MyViewHolder(final View view){
             super(view);
-            dateTxt = view.findViewById(R.id.Colhour);
-            tempTxt = view.findViewById(R.id.Coltemp);
-            weatherIcon = view.findViewById(R.id.Colimg);
+            dateTxt = view.findViewById(R.id.Coldate);
+            tempTxt = view.findViewById(R.id.ColDaytemp);
+            weatherIcon = view.findViewById(R.id.ColDayimg);
         }
 
     }
