@@ -1,5 +1,7 @@
 package com.example.javaweather.Contoller;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,9 +16,10 @@ import java.util.ArrayList;
 
 public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.MyViewHolder>{
     private ArrayList<Weather> weatherList;
+    private ArrayList<ArrayList<Weather>> hoursForcast = new ArrayList<>();
 
-    public recyclerAdapterDay(ArrayList<Weather> weatherList){
-
+    public recyclerAdapterDay(ArrayList<Weather> weatherList, ArrayList<ArrayList<Weather>> hoursForcast){
+        this.hoursForcast = hoursForcast;
         this.weatherList = weatherList;
     }
 
@@ -25,11 +28,21 @@ public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.
         private TextView tempTxt;
         private ImageView weatherIcon;
 
-        public MyViewHolder(final View view){
-            super(view);
-            dateTxt = view.findViewById(R.id.Coldate);
-            tempTxt = view.findViewById(R.id.ColDaytemp);
-            weatherIcon = view.findViewById(R.id.ColDayimg);
+        public MyViewHolder(final View itemView){
+            super(itemView);
+            dateTxt = itemView.findViewById(R.id.Coldate);
+            tempTxt = itemView.findViewById(R.id.ColDaytemp);
+            weatherIcon = itemView.findViewById(R.id.ColDayimg);
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Intent intent = new Intent();
+                    intent.setClass(itemView.getContext(),HoursPageActivity.class);
+                    intent.putExtra("HourData",hoursForcast.get(position+1));
+                    itemView.getContext().startActivity(intent);
+                }
+            });
         }
 
     }

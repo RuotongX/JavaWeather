@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Weather> daysForcast =  new ArrayList<>();;
     private ArrayList<ArrayList<Weather>> hoursForcast = new ArrayList<>();
     private RecyclerView recyclerView;
-    private TextView address, temperature, weatherCondition;
+    private TextView address, temperature, weatherCondition,daydate;
     private ImageButton hourPage;
 
 
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        GetApiValueToArray a = new GetApiValueToArray();
         recyclerView = findViewById(R.id.recyclerView);
+        daydate = findViewById(R.id.DayDate);
         address = findViewById(R.id.address);
         temperature = findViewById(R.id.temp);
         weatherCondition = findViewById(R.id.weather);
@@ -55,15 +56,16 @@ public class MainActivity extends AppCompatActivity {
         getDaysWeather();
         getHoursWeather();
 
-        temperature.setText(daysForcast.get(0).getTemp());
-        weatherCondition.setText(daysForcast.get(0).getWeather());
+        daydate.setText(weatherList.get(0).getDate());
+        temperature.setText(weatherList.get(0).getTemp());
+        weatherCondition.setText(weatherList.get(0).getWeather());
         setAdapter();
 
     }
 
     private void setAdapter() {
 
-        recyclerAdapterDay adapter = new recyclerAdapterDay(daysForcast);
+        recyclerAdapterDay adapter = new recyclerAdapterDay(daysForcast,hoursForcast);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
