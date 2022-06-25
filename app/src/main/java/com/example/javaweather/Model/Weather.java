@@ -1,5 +1,7 @@
 package com.example.javaweather.Model;
 
+
+
 import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -72,29 +74,41 @@ public class Weather implements Serializable {
     public void setIcon(String icon) {
         switch(icon) {
             case "01d":
-                this.icon = "d01.png";
+                this.icon = "d01";
+                break;
             case "01n":
-                this.icon = "n01.png";
+                this.icon = "n01";
+                break;
             case "02d":
-                this.icon = "d02.png";
+                this.icon = "d02";
+                break;
             case "02n":
-                this.icon = "n02.png";
+                this.icon = "n02";
+                break;
             case "10d":
-                this.icon = "d10.png";
+                this.icon = "d10";
+                break;
             case "10n":
-                this.icon = "n10.png";
+                this.icon = "n10";
+                break;
             case "03d":
-                this.icon = "d03.png";
+                this.icon = "d03";
+                break;
             case "09d":
-                this.icon = "d09.png";
+                this.icon = "d09";
+                break;
             case "11d":
-                this.icon = "d11.png";
+                this.icon = "d11";
+                break;
             case "13d":
-                this.icon = "d13.png";
+                this.icon = "d13";
+                break;
             case "50d":
-                this.icon = "d50.png";
+                this.icon = "d50";
+                break;
             default:
-                this.icon = "d03.png";
+                this.icon = "d03";
+                break;
         }
     }
 

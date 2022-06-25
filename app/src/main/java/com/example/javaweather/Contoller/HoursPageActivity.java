@@ -36,6 +36,7 @@ public class HoursPageActivity extends AppCompatActivity {
         temp = findViewById(R.id.Hourtemp);
         date = findViewById(R.id.Hourdate);
         hour = findViewById(R.id.hour);
+        weaHourimg = findViewById(R.id.weaHourimg);
 
         feelstemp.setText(hourlist.get(0).getFeels());
         humidity.setText(hourlist.get(0).getHumidity());
@@ -43,6 +44,10 @@ public class HoursPageActivity extends AppCompatActivity {
         temp.setText(hourlist.get(0).getTemp());
         date.setText(hourlist.get(0).getDate());
         hour.setText(hourlist.get(0).getTime());
+
+        String imageName = hourlist.get(0).getIcon();
+        int resID = getResources().getIdentifier(imageName,"drawable",HoursPageActivity.this.getPackageName());
+        weaHourimg.setImageResource(resID);
 
         setAdapter();
 

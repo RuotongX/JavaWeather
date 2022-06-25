@@ -1,5 +1,6 @@
 package com.example.javaweather.Contoller;
 
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.example.javaweather.Model.Weather;
 import com.example.javaweather.R;
 
 import java.util.ArrayList;
+
+import javax.annotation.Resource;
 
 public class recyclerAdapterHour extends RecyclerView.Adapter<recyclerAdapterHour.MyViewHolder>{
     private ArrayList<Weather> hourList;
@@ -50,10 +53,14 @@ public class recyclerAdapterHour extends RecyclerView.Adapter<recyclerAdapterHou
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Resources res = holder.itemView.getContext().getResources();
         String hour = hourList.get(position).getTime();
         String temp = hourList.get(position).getTemp();
         String feels = hourList.get(position).getFeels();
         String hum = hourList.get(position).getHumidity();
+        String imageName = hourList.get(position).getIcon();
+        int resID = res.getIdentifier(imageName,"drawable","com.example.javaweather");
+        holder.weatherIcon.setImageResource(resID);
         holder.timeTxt.setText(hour);
         holder.tempTxt.setText(temp);
         holder.feelsTxt.setText(feels);

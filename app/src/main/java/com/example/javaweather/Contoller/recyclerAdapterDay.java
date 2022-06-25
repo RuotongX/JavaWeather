@@ -1,6 +1,7 @@
 package com.example.javaweather.Contoller;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
@@ -13,6 +14,8 @@ import com.example.javaweather.Model.Weather;
 import com.example.javaweather.R;
 
 import java.util.ArrayList;
+
+import javax.annotation.Resource;
 
 public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.MyViewHolder>{
     private ArrayList<Weather> weatherList;
@@ -28,11 +31,13 @@ public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.
         private TextView tempTxt;
         private ImageView weatherIcon;
 
+
         public MyViewHolder(final View itemView){
             super(itemView);
             dateTxt = itemView.findViewById(R.id.Coldate);
             tempTxt = itemView.findViewById(R.id.ColDaytemp);
             weatherIcon = itemView.findViewById(R.id.ColDayimg);
+
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -56,8 +61,12 @@ public class recyclerAdapterDay extends RecyclerView.Adapter<recyclerAdapterDay.
 
     @Override
     public void onBindViewHolder(@NonNull recyclerAdapterDay.MyViewHolder holder, int position) {
+        Resources res = holder.itemView.getContext().getResources();
         String date = weatherList.get(position).getDate();
         String temp = weatherList.get(position).getTemp();
+        String imageName = weatherList.get(position).getIcon();
+        int resID = res.getIdentifier(imageName,"drawable","com.example.javaweather");
+        holder.weatherIcon.setImageResource(resID);
         holder.dateTxt.setText(date);
         holder.tempTxt.setText(temp);
 
