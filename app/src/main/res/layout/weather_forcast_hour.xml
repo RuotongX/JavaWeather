@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#17040101">
+    android:background="@color/black_transparent">
 
     <TextView
-        android:id="@+id/Colhour"
+        android:id="@+id/recycler_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="06:00"
-        android:textColor="#DDFFFFFF"
+        android:text="@string/time_0300"
+        android:textColor="@color/white_text"
         android:textSize="20sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,43 +19,45 @@
         app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.52"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
-        android:id="@+id/ColHourtemp"
+        android:id="@+id/recycler_temperature_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="13°C"
-        android:textColor="#DDFFFFFF"
+        android:text="@string/temperature_26"
+        android:textColor="@color/white_text"
         android:textSize="20sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.76" />
+        app:layout_constraintVertical_bias="0.76"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
-        android:id="@+id/ColHourFeels"
+        android:id="@+id/recycler_feels_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="10°C"
-        android:textColor="#DDFFFFFF"
+        android:text="@string/feels_24"
+        android:textColor="@color/white_text"
         android:textSize="20sp"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.76" />
+        app:layout_constraintVertical_bias="0.76"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
-        android:id="@+id/ColHourHum"
+        android:id="@+id/recycler_humidity_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="38%"
-        android:textColor="#DDFFFFFF"
+        android:text="@string/humidity_63"
+        android:textColor="@color/white_text"
         android:textSize="20sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,69 +65,75 @@
         app:layout_constraintHorizontal_bias="0.73"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.76" />
+        app:layout_constraintVertical_bias="0.76"
+        tools:ignore="TextContrastCheck" />
 
     <ImageView
-        android:id="@+id/ColHourImg"
+        android:id="@+id/recycler_weather_iv"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:contentDescription="@string/description_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45"
-        app:srcCompat="@drawable/d01" />
+        app:srcCompat="@drawable/d01"
+        tools:ignore="ImageContrastCheck" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="1dp"
-        android:background="#63FFFFFF"
+        android:background="@color/gray_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ColHourImg" />
+        app:layout_constraintTop_toBottomOf="@+id/recycler_weather_iv" />
 
     <TextView
-        android:id="@+id/coltemptitle"
+        android:id="@+id/recycler_temperature_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Temperature"
-        android:textColor="#DDFFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/ColHourtemp"
+        android:text="@string/temperature_textField"
+        android:textColor="@color/white_text"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_temperature_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.52"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
-        android:id="@+id/colhumtitle"
+        android:id="@+id/recycler_humidity_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Humidity"
-        android:textColor="#DDFFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/ColHourtemp"
+        android:text="@string/humidity_textField"
+        android:textColor="@color/white_text"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_temperature_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.74"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.52"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
-        android:id="@+id/colfeeltitle"
+        android:id="@+id/recycler_feels_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Feels"
-        android:textColor="#DDFFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/ColHourtemp"
+        android:text="@string/feels_textField"
+        android:textColor="@color/white_text"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_temperature_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.91"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.52"
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

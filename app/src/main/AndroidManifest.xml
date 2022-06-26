@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaWeather">
         <activity
-            android:name=".Contoller.MainActivity"
+            android:name=".Controller.DayPage.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Contoller.HoursPageActivity"></activity>
+        <activity android:name=".Controller.HourPage.HoursPageActivity"></activity>
     </application>
 
 </manifest>

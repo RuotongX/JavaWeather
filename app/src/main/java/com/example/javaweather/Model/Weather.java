@@ -1,11 +1,14 @@
 package com.example.javaweather.Model;
 
 
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+
+import com.example.javaweather.R;
 
 public class Weather implements Serializable {
     private String temp;
@@ -14,9 +17,10 @@ public class Weather implements Serializable {
     private String description;
     private String date;
     private String time;
-    private String icon;
+    private int icon;
     private String address;
     private String humidity;
+    private long timezone;
 
 
     public String getTemp() {
@@ -24,8 +28,8 @@ public class Weather implements Serializable {
     }
 
     public void setTemp(double temp) {
-        int t = (int)Math.round(temp - 273.15);
-        String result = String.valueOf(t)+"°C";
+        int t = (int) Math.round(temp - 273.15);
+        String result = String.valueOf(t) + "°C";
         this.temp = result;
     }
 
@@ -35,8 +39,8 @@ public class Weather implements Serializable {
     }
 
     public void setFeels(double feels) {
-        int t = (int)Math.round(feels - 273.15);
-        String result = String.valueOf(t)+"°C";
+        int t = (int) Math.round(feels - 273.15);
+        String result = String.valueOf(t) + "°C";
         this.feels = result;
     }
 
@@ -61,53 +65,50 @@ public class Weather implements Serializable {
     }
 
     public void setTime(long timeCode) {
-        Date date = new Date(timeCode*1000L);
+        Date date = new Date(timeCode * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         sdf.setTimeZone(TimeZone.getDefault());
         this.time = sdf.format(date);
     }
 
-    public String getIcon() {
+    public int getIcon() {
         return icon;
     }
 
     public void setIcon(String icon) {
-        switch(icon) {
+        switch (icon) {
             case "01d":
-                this.icon = "d01";
+                this.icon = R.drawable.d01;
                 break;
             case "01n":
-                this.icon = "n01";
+                this.icon = R.drawable.n01;
                 break;
             case "02d":
-                this.icon = "d02";
+                this.icon = R.drawable.d02;
                 break;
             case "02n":
-                this.icon = "n02";
+                this.icon = R.drawable.n02;
                 break;
             case "10d":
-                this.icon = "d10";
+                this.icon = R.drawable.d10;
                 break;
             case "10n":
-                this.icon = "n10";
-                break;
-            case "03d":
-                this.icon = "d03";
+                this.icon = R.drawable.n10;
                 break;
             case "09d":
-                this.icon = "d09";
+                this.icon = R.drawable.d09;
                 break;
             case "11d":
-                this.icon = "d11";
+                this.icon = R.drawable.d11;
                 break;
             case "13d":
-                this.icon = "d13";
+                this.icon = R.drawable.d13;
                 break;
             case "50d":
-                this.icon = "d50";
+                this.icon = R.drawable.d50;
                 break;
             default:
-                this.icon = "d03";
+                this.icon = R.drawable.d03;
                 break;
         }
     }
@@ -117,7 +118,7 @@ public class Weather implements Serializable {
     }
 
     public void setDate(long timeCode) {
-        Date d = new Date(timeCode*1000L);
+        Date d = new Date(timeCode * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
         sdf.setTimeZone(TimeZone.getDefault());
         this.date = sdf.format(d);
@@ -136,20 +137,23 @@ public class Weather implements Serializable {
     }
 
     public void setHumidity(int humidity) {
-        this.humidity = humidity+"%";
+        this.humidity = humidity + "%";
     }
 
-    public Weather(String date,String icon, String weather,String temp){
-        this.icon =icon;
+
+    public Weather(String date, int icon, String weather, String temp) {
+        this.icon = icon;
         this.date = date;
         this.weather = weather;
         this.temp = temp;
     }
-    public Weather(){
+
+    public Weather() {
 
     }
-    public Weather(String time,String date,String icon, String weather,String temp,String feels,String description,String humidity){
-        this.icon =icon;
+
+    public Weather(String time, String date, int icon, String weather, String temp, String feels, String description, String humidity) {
+        this.icon = icon;
         this.date = date;
         this.weather = weather;
         this.temp = temp;
