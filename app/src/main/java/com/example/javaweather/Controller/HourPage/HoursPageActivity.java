@@ -53,12 +53,9 @@ public class HoursPageActivity extends AppCompatActivity {
 
 
         back_ib = findViewById(R.id.back_button);
-        back_ib.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                ;
-            }
+        back_ib.setOnClickListener(v -> {
+            finish();
+            ;
         });
     }
 

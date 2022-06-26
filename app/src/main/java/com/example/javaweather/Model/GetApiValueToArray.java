@@ -1,12 +1,18 @@
 package com.example.javaweather.Model;
 
 
+import android.annotation.SuppressLint;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.javaweather.Model.Converter.Example;
+import com.example.javaweather.Model.Converter.List;
+import com.example.javaweather.Model.Converter.Overall;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -29,12 +35,41 @@ public class GetApiValueToArray {
     private String json_string;
     private ArrayList<Weather> weatherForecast = new ArrayList<>();
     public ArrayGetter wcallback;
+    private Handler handler;
 
 
+    @SuppressLint("HandlerLeak")
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GetApiValueToArray(ArrayGetter c) {
         this.wcallback = c;
         StringBuilder json = new StringBuilder();
+        // The handler here is to ensure the following data process step won't be in the url data getting thread but main thread.
+        // So that the callback function could be clearly in main thread not in url getting thread.
+        handler = new Handler(msg->{
+            if(msg.what == 0){
+                json_string = json.toString();
+                Gson gson = new Gson();
+                Overall raw = gson.fromJson(json_string, Overall.class);
+                for (int i = 0; i < raw.getList().size(); i++) {
+                    Weather w = new Weather();
+                    List list = raw.getList().get(i);
+                    w.setTemp(list.getMain().getTemp());
+                    w.setFeels(list.getMain().getFeelsLike());
+                    w.setWeather(list.getDetail().get(0).getMain());
+                    w.setDescription(list.getDetail().get(0).getDescription());
+                    w.setDate(list.getDt());
+                    w.setTime(list.getDt());
+                    w.setIcon(list.getDetail().get(0).getIcon());
+                    w.setAddress(raw.getCity().getName());
+                    w.setHumidity(list.getMain().getHumidity());
+                    weatherForecast.add(w);
+                }
+                Log.d("success message", "  finished");
+                wcallback.WeatherForecast(weatherForecast);
+            }
+            return false;
+        });
+
 
         new Thread(() -> {
             try {
@@ -42,37 +77,24 @@ public class GetApiValueToArray {
                 URLConnection uc = urlObject.openConnection();
                 uc.setConnectTimeout(5000);
                 BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-                String inputLine = null;
+                String inputLine = "";
                 while ((inputLine = in.readLine()) != null) {
                     json.append(inputLine);
                 }
                 in.close();
+                if(json.length()!=0){
+                    handler.sendEmptyMessage(0);
+                } else{
+                    handler.sendEmptyMessage(1);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            json_string = json.toString();
-            Gson gson = new Gson();
-            Example raw = gson.fromJson(json_string, Example.class);
-            for (int i = 0; i < raw.getList().size(); i++) {
-                Weather w = new Weather();
-                w.setTemp(raw.getList().get(i).getMain().getTemp());
-                w.setFeels(raw.getList().get(i).getMain().getFeelsLike());
-                w.setWeather(raw.getList().get(i).getDetail().get(0).getMain());
-                w.setDescription(raw.getList().get(i).getDetail().get(0).getDescription());
-                w.setDate(raw.getList().get(i).getDt());
-                w.setTime(raw.getList().get(i).getDt());
-                w.setIcon(raw.getList().get(i).getDetail().get(0).getIcon());
-                w.setAddress(raw.getCity().getName());
-                w.setHumidity(raw.getList().get(i).getMain().getHumidity());
-                weatherForecast.add(w);
-            }
-            Log.d("success message", "  finished");
-            wcallback.WeatherForecast(weatherForecast);
 
         }).start();
-
-
     }
+
+
 
 
 }

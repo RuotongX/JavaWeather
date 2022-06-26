@@ -9,9 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +19,7 @@ import com.example.javaweather.R;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecall {
+public class DayPageActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecallInterface {
     private ArrayList<Weather> weatherForecast, daysForecast = new ArrayList<>();
     private ArrayList<ArrayList<Weather>> hoursForecast = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -36,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements ArrayGetter, Hour
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GetApiValueToArray getApiValueToArray = new GetApiValueToArray(MainActivity.this);
+        new GetApiValueToArray(DayPageActivity.this);
 
         recyclerView = findViewById(R.id.recyclerView);
         date_tv = findViewById(R.id.date_tv);
@@ -45,21 +42,18 @@ public class MainActivity extends AppCompatActivity implements ArrayGetter, Hour
         weather_tv = findViewById(R.id.weather_tv);
         weather_iv = findViewById(R.id.weather_iv);
         hourDetail_ib = findViewById(R.id.detail_ib);
-        hourDetail_ib.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, HoursPageActivity.class);
-                intent.putExtra("HourData", hoursForecast.get(0));
-                startActivity(intent);
-            }
+        hourDetail_ib.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setClass(DayPageActivity.this, HoursPageActivity.class);
+            intent.putExtra("HourData", hoursForecast.get(0));
+            startActivity(intent);
         });
         hourDetail_ib.setClickable(false);
 
     }
 
     private void setAdapter() {
-        DayAdapter adapter = new DayAdapter(daysForecast, MainActivity.this);
+        DayAdapter adapter = new DayAdapter(daysForecast, DayPageActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -111,16 +105,16 @@ public class MainActivity extends AppCompatActivity implements ArrayGetter, Hour
         this.weatherForecast = weatherForecast;
         getHoursWeather();
         getDaysWeather();
-        new Handler(Looper.getMainLooper()).post(() -> {
-            Weather firstDayWeather = weatherForecast.get(0);
-            date_tv.setText(firstDayWeather.getDate());
-            temperature_tv.setText(firstDayWeather.getTemp());
-            weather_tv.setText(firstDayWeather.getWeather());
-            address_tv.setText(firstDayWeather.getAddress());
-            weather_iv.setImageResource(firstDayWeather.getIcon());
-            setAdapter();
-            hourDetail_ib.setClickable(true);
-        });
+
+        Weather firstDayWeather = weatherForecast.get(0);
+        date_tv.setText(firstDayWeather.getDate());
+        temperature_tv.setText(firstDayWeather.getTemp());
+        weather_tv.setText(firstDayWeather.getWeather());
+        address_tv.setText(firstDayWeather.getAddress());
+        weather_iv.setImageResource(firstDayWeather.getIcon());
+        setAdapter();
+        hourDetail_ib.setClickable(true);
+
 
     }
 
@@ -128,9 +122,9 @@ public class MainActivity extends AppCompatActivity implements ArrayGetter, Hour
     @Override
     public void callback(int position) {
         Intent intent = new Intent();
-        intent.setClass(MainActivity.this, HoursPageActivity.class);
+        intent.setClass(DayPageActivity.this, HoursPageActivity.class);
         intent.putExtra("HourData", hoursForecast.get(position + 1));
-        MainActivity.this.startActivity(intent);
+        DayPageActivity.this.startActivity(intent);
     }
 }
 

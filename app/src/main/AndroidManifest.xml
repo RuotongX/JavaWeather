@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaWeather">
         <activity
-            android:name=".Controller.DayPage.MainActivity"
+            android:name=".Controller.DayPage.DayPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,6 @@
 package com.example.javaweather.Controller.DayPage;
 
-import android.content.Intent;
+
 import android.content.res.Resources;
 import android.view.*;
 import android.widget.ImageView;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.javaweather.Controller.HourPage.HoursPageActivity;
+
 import com.example.javaweather.Model.Weather;
 import com.example.javaweather.R;
 
@@ -18,9 +18,9 @@ import java.util.ArrayList;
 public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
     private ArrayList<Weather> weatherList;
 
-    private HourRequestRecall wcallback;
+    private HourRequestRecallInterface wcallback;
 
-    public DayAdapter(ArrayList<Weather> weatherList, HourRequestRecall cb) {
+    public DayAdapter(ArrayList<Weather> weatherList, HourRequestRecallInterface cb) {
         this.wcallback = cb;
         this.weatherList = weatherList;
     }
@@ -54,10 +54,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
         private TextView date_tv;
         private TextView temperature_tv;
         private ImageView weather_iv;
-        private HourRequestRecall wcallback;
+        private HourRequestRecallInterface wcallback;
 
 
-        public MyViewHolder(final View itemView, HourRequestRecall cb) {
+        public MyViewHolder(final View itemView, HourRequestRecallInterface cb) {
             super(itemView);
             this.wcallback = cb;
             date_tv = itemView.findViewById(R.id.recycler_date_tv);
@@ -68,8 +68,9 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
                 wcallback.callback(position);
             });
         }
-
     }
 }
 
-
+interface HourRequestRecallInterface {
+    void callback(int position);
+}
