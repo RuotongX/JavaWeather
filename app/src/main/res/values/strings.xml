@@ -13,4 +13,8 @@
     <string name="temperature_textField">Temperature</string>
     <string name="humidity_textField">Humidity</string>
     <string name="description_weather">overcast clouds</string>
+    <string name="address_loading">Loading</string>
+    <string name="weather_null"></string>
+    <string name="temperature_null"></string>
+    <string name="date_null"></string>
 </resources>

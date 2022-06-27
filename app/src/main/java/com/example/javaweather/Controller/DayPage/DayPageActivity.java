@@ -1,31 +1,49 @@
 package com.example.javaweather.Controller.DayPage;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.javaweather.Controller.HourPage.HoursPageActivity;
 import com.example.javaweather.Model.*;
 import com.example.javaweather.R;
 
+
 import java.util.ArrayList;
 
-public class DayPageActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecallInterface {
+
+public class DayPageActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecallInterface, LocationListener {
     private ArrayList<Weather> weatherForecast, daysForecast = new ArrayList<>();
     private ArrayList<ArrayList<Weather>> hoursForecast = new ArrayList<>();
     private RecyclerView recyclerView;
+
+    private LocationManager locationManager;
     private TextView address_tv, temperature_tv, weather_tv, date_tv;
     private ImageView weather_iv;
     private ImageButton hourDetail_ib;
+    private ProgressBar loading_bar;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -33,7 +51,6 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new GetApiValueToArray(DayPageActivity.this);
 
         recyclerView = findViewById(R.id.recyclerView);
         date_tv = findViewById(R.id.date_tv);
@@ -42,6 +59,14 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         weather_tv = findViewById(R.id.weather_tv);
         weather_iv = findViewById(R.id.weather_iv);
         hourDetail_ib = findViewById(R.id.detail_ib);
+        loading_bar = findViewById(R.id.loading_bar);
+
+        if (ActivityCompat.checkSelfPermission(DayPageActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(DayPageActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        }
+        getLocation();
+
+
         hourDetail_ib.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setClass(DayPageActivity.this, HoursPageActivity.class);
@@ -58,6 +83,26 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) DayPageActivity.this);
+
+
+
     }
 
     //Transfer the weather list into Days(Arraylist) of Weather structure.
@@ -77,11 +122,10 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     // For example, there are 7 days in a week(Arraylist), each days have 24 hours(Arraylist), each hour has a Weather data.
     public void getHoursWeather() {
         String preDate = weatherForecast.get(0).getDate();
-        ArrayList<Weather> dayStorage = new ArrayList<Weather>();
+        ArrayList<Weather> dayStorage = new ArrayList<>();
         for (int i = 0; i < weatherForecast.size(); i++) {
             if (!preDate.equals(weatherForecast.get(i).getDate()) && dayStorage.size() != 0) {
-                ArrayList<Weather> Storage = new ArrayList<>();
-                Storage.addAll(dayStorage);
+                ArrayList<Weather> Storage = new ArrayList<>(dayStorage);
                 hoursForecast.add(Storage);
                 dayStorage.clear();
             }
@@ -102,11 +146,13 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     //Override callback function from ArrayGetter interface, aim to refresh the data on the page. Since url data getting is Asynchronous, after getting the data, page need to display.
     @Override
     public void WeatherForecast(ArrayList<Weather> weatherForecast) {
+
         this.weatherForecast = weatherForecast;
         getHoursWeather();
         getDaysWeather();
 
         Weather firstDayWeather = weatherForecast.get(0);
+        loading_bar.setVisibility(View.GONE);
         date_tv.setText(firstDayWeather.getDate());
         temperature_tv.setText(firstDayWeather.getTemp());
         weather_tv.setText(firstDayWeather.getWeather());
@@ -126,5 +172,28 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         intent.putExtra("HourData", hoursForecast.get(position + 1));
         DayPageActivity.this.startActivity(intent);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+//        Log.d("runtime message","On getLocation");
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        String lat = String.valueOf(latitude);
+        String lon = String.valueOf(longitude);
+        new GetApiValueToArray(lat, lon, DayPageActivity.this);
+//       If need to use more address information, the following code would be useful.
+
+//        Geocoder geocoder = new Geocoder(DayPageActivity.this, Locale.getDefault());
+//        try{
+//            List<Address> addressList = geocoder.getFromLocation(latitude,longitude,1);
+//            Address address = addressList.get(0);
+//        } catch(IOException e){
+//            e.printStackTrace();
+//        }
+        locationManager.removeUpdates(this);
+
+        }
 }
 
