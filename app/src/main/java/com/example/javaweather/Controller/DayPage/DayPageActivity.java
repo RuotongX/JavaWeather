@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -20,6 +21,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,9 +39,9 @@ import java.util.ArrayList;
 public class DayPageActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecallInterface, LocationListener {
     private ArrayList<Weather> weatherForecast, daysForecast = new ArrayList<>();
     private ArrayList<ArrayList<Weather>> hoursForecast = new ArrayList<>();
-    private RecyclerView recyclerView;
-
     private LocationManager locationManager;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
     private TextView address_tv, temperature_tv, weather_tv, date_tv;
     private ImageView weather_iv;
     private ImageButton hourDetail_ib;
@@ -51,7 +53,6 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         recyclerView = findViewById(R.id.recyclerView);
         date_tv = findViewById(R.id.date_tv);
         address_tv = findViewById(R.id.address_tv);
@@ -61,11 +62,36 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         hourDetail_ib = findViewById(R.id.detail_ib);
         loading_bar = findViewById(R.id.loading_bar);
 
-        if (ActivityCompat.checkSelfPermission(DayPageActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(DayPageActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-        }
         getLocation();
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.teal_200));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray_background));
+        swipeRefreshLayout.setProgressViewOffset(true,10,200);
+        swipeRefreshLayout.setDistanceToTriggerSync(200);
+        swipeRefreshLayout.setOnRefreshListener(()-> {
+                weatherForecast.clear();
+                hoursForecast.clear();
+                daysForecast.clear();
+                //While refreshing the recyclerView should been disable, because data in recyclerView is changing, if user interact with them, it would return non pointer exception.
+                recyclerView.setOnTouchListener((v, event) -> true);
+                getLocation();
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                //While user swipe recyclerview, the refresh function has been disable to prevent mistake refreshing.
+                //The top if function is to prevent the system already in refreshing state, the disable command would make refreshing icon disappear.
+                if(!swipeRefreshLayout.isRefreshing()){
+                    if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                        swipeRefreshLayout.setEnabled(false);
+                    } else {
+                        swipeRefreshLayout.setEnabled(true);
+                    }
+                }
+            }
+        });
 
         hourDetail_ib.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -153,11 +179,16 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
 
         Weather firstDayWeather = weatherForecast.get(0);
         loading_bar.setVisibility(View.GONE);
+
         date_tv.setText(firstDayWeather.getDate());
         temperature_tv.setText(firstDayWeather.getTemp());
         weather_tv.setText(firstDayWeather.getWeather());
         address_tv.setText(firstDayWeather.getAddress());
         weather_iv.setImageResource(firstDayWeather.getIcon());
+        //After refreshing, set the refreshing icon disappear
+        swipeRefreshLayout.setRefreshing(false);
+        //Once refreshing done, recyclerView should be able to interact.
+        recyclerView.setOnTouchListener((v, event) -> false);
         setAdapter();
         hourDetail_ib.setClickable(true);
 

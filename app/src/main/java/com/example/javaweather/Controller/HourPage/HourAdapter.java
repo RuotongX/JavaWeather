@@ -32,7 +32,6 @@ public class HourAdapter extends RecyclerView.Adapter<HourAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Resources res = holder.itemView.getContext().getResources();
         String hour = hourList.get(position).getTime();
         String temp = hourList.get(position).getTemp();
         String feels = hourList.get(position).getFeels();
