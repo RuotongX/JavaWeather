@@ -21,6 +21,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -61,6 +62,11 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         weather_iv = findViewById(R.id.weather_iv);
         hourDetail_ib = findViewById(R.id.detail_ib);
         loading_bar = findViewById(R.id.loading_bar);
+
+
+        if(ActivityCompat.checkSelfPermission(DayPageActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(DayPageActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        }
 
         getLocation();
 
@@ -114,6 +120,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     @SuppressLint("MissingPermission")
     private void getLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -125,9 +132,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
             return;
         }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) DayPageActivity.this);
-
-
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) DayPageActivity.this);
 
     }
 
@@ -207,7 +212,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onLocationChanged(@NonNull Location location) {
-//        Log.d("runtime message","On getLocation");
+
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
