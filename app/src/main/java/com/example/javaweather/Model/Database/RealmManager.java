@@ -46,11 +46,40 @@ public class RealmManager {
             w.setIcon(wr.getIcon());
             w.setAddress(wr.getAddress());
             w.setHumidity(wr.getHumidity());
+            w.setTimeCode(wr.getTimeCode());
             weatherForecast.add(w);
         }
         return weatherForecast;
     }
+
+    public void updateWeather(List instance,String address){
+        realm.executeTransactionAsync(new Realm.Transaction(){
+            @Override
+            public void execute(Realm realm) {
+                WeatherRealm wr = realm.where(WeatherRealm.class).equalTo("timeCode",instance.getDt()).findFirst();
+                wr.setTemp(instance.getMain().getTemp());
+                wr.setFeels(instance.getMain().getFeelsLike());
+                wr.setWeather(instance.getDetail().get(0).getMain());
+                wr.setDescription(instance.getDetail().get(0).getDescription());
+                wr.setIcon(instance.getDetail().get(0).getIcon());
+                wr.setAddress(address);
+                wr.setHumidity(instance.getMain().getHumidity());
+            }
+        });
+    }
+
     public void DeleteWeather(){
+        realm.beginTransaction();
         realm.deleteAll();
+        realm.commitTransaction();
+    }
+    public boolean contains(long timeCode){
+        weatherDatabase = realm.where(WeatherRealm.class).findAll();
+        for(WeatherRealm wr:weatherDatabase){
+            if(wr.getTimeCode() == timeCode){
+                return true;
+            }
+        }
+        return false;
     }
 }

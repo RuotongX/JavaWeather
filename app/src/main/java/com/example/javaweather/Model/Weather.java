@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 import com.example.javaweather.R;
 
-public class Weather implements Serializable {
+public class Weather implements Serializable, Comparable {
     private String temp;
     private String feels;
     private String weather;
@@ -140,6 +140,13 @@ public class Weather implements Serializable {
         this.humidity = humidity + "%";
     }
 
+    public long getTimeCode() {
+        return timeCode;
+    }
+
+    public void setTimeCode(long timeCode) {
+        this.timeCode = timeCode;
+    }
 
     public Weather(String date, int icon, String weather, String temp) {
         this.icon = icon;
@@ -161,5 +168,12 @@ public class Weather implements Serializable {
         this.description = description;
         this.time = time;
         this.humidity = humidity;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Weather w = (Weather) o;
+        Long l = getTimeCode() - w.getTimeCode();
+        return  l.intValue();
     }
 }

@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -70,27 +71,34 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         hourDetail_ib = findViewById(R.id.detail_ib);
         loading_bar = findViewById(R.id.loading_bar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-
         recyclerView.setOnTouchListener((v, event) -> true);
+        hourDetail_ib.setClickable(false);
 
         getApi = new GetApiValueToArray(DayPageActivity.this);
+        if(isNetworkConnected()==false){
+            //If detect network connection is false, all the elements should be interacted with. (Locking them is because once data refreshing, the new data would replace old data.)
+            recyclerView.setOnTouchListener((v, event) -> false);
+            hourDetail_ib.setClickable(true);
+        } else{
+            if(ActivityCompat.checkSelfPermission(DayPageActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(DayPageActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            }
 
-        if(ActivityCompat.checkSelfPermission(DayPageActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(DayPageActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            getLocation();
         }
 
-        getLocation();
 
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.teal_200));
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray_background));
         swipeRefreshLayout.setProgressViewOffset(true,10,200);
         swipeRefreshLayout.setDistanceToTriggerSync(200);
         swipeRefreshLayout.setOnRefreshListener(()-> {
-                weatherForecast.clear();
-                hoursForecast.clear();
-                daysForecast.clear();
+                if(isNetworkConnected()==false){
+                    return;
+                }
                 //While refreshing the recyclerView should been disable, because data in recyclerView is changing, if user interact with them, it would return non pointer exception.
                 recyclerView.setOnTouchListener((v, event) -> true);
+
                 getLocation();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -115,7 +123,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
             intent.putExtra("HourData", hoursForecast.get(0));
             startActivity(intent);
         });
-        hourDetail_ib.setClickable(false);
+
 
     }
 
@@ -184,6 +192,13 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         hoursForecast.add(dayStorage);
     }
 
+    //Check device is online or not
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
     //Override callback function from ArrayGetter interface, aim to refresh the data on the page. Since url data getting is Asynchronous, after getting the data, page need to display.
     @Override
     public void WeatherForecast(ArrayList<Weather> weatherForecast) {
@@ -227,6 +242,11 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         double longitude = location.getLongitude();
         String lat = String.valueOf(latitude);
         String lon = String.valueOf(longitude);
+        if(weatherForecast.size()!=0){
+            daysForecast.clear();
+            hoursForecast.clear();
+            weatherForecast.clear();
+        }
         getApi.setLat(lat);
         getApi.setLon(lon);
         getApi.RefreshData();

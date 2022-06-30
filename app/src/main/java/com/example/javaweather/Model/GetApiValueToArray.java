@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -57,7 +59,10 @@ public class GetApiValueToArray  {
         //Database initialize
         rm = new RealmManager();
         weatherForecast = rm.selectFromDB();
+        Log.d("amount message",String.valueOf(weatherForecast.size()));
         if(weatherForecast.size()!=0){
+            //when local database has data, UI thread get recall method and display the data. The other thread are getting new data at backend if network available.
+            Collections.sort(weatherForecast);
             wcallback.WeatherForecast(weatherForecast);
         }
     }
@@ -80,9 +85,12 @@ public class GetApiValueToArray  {
                 Gson gson = new Gson();
                 Overall raw = gson.fromJson(json_string, Overall.class);
                 String address = raw.getCity().getName();
+                weatherForecast.clear();
                 for (int i = 0; i < raw.getList().size(); i++) {
                     List list = raw.getList().get(i);
-                    rm.saveDatabase(list,address);
+
+                    rm.saveDatabase(list, address);
+
                     Weather w = new Weather();
                     w.setTemp(list.getMain().getTemp());
                     w.setFeels(list.getMain().getFeelsLike());
@@ -104,6 +112,7 @@ public class GetApiValueToArray  {
 
 
         new Thread(() -> {
+
             try {
                 URL urlObject = new URL(url);
                 URLConnection uc = urlObject.openConnection();
