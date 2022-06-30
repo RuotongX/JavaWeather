@@ -20,7 +20,7 @@ public class Weather implements Serializable {
     private int icon;
     private String address;
     private String humidity;
-    private long timezone;
+    private long timeCode;
 
 
     public String getTemp() {

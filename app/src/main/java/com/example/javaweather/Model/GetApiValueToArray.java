@@ -21,6 +21,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.javaweather.Model.Converter.List;
 import com.example.javaweather.Model.Converter.Overall;
+import com.example.javaweather.Model.Database.RealmManager;
+import com.example.javaweather.Model.Database.WeatherRealm;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -28,6 +30,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 
 public class GetApiValueToArray  {
@@ -39,30 +45,45 @@ public class GetApiValueToArray  {
     private ArrayList<Weather> weatherForecast = new ArrayList<>();
     public ArrayGetter wcallback;
     private Handler handler;
+    private RealmManager rm;
+    private String lat,lon;
 
 
     @SuppressLint("HandlerLeak")
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public GetApiValueToArray(String lat, String lon,ArrayGetter c) {
+    public GetApiValueToArray(ArrayGetter c) {
         this.wcallback = c;
+
+        //Database initialize
+        rm = new RealmManager();
+        weatherForecast = rm.selectFromDB();
+        if(weatherForecast.size()!=0){
+            wcallback.WeatherForecast(weatherForecast);
+        }
+    }
+
+    public void RefreshData(){
         StringBuilder json = new StringBuilder();
+        rm.DeleteWeather();
         // The handler here is to ensure the following data process step won't be in the url data getting thread but main thread.
         // So that the callback function could be clearly in main thread not in url getting thread.
-
         url = "https://api.openweathermap.org/data/2.5/forecast?lat=" +
                 lat +
                 "&" + "lon=" +
                 lon +
                 "&appid=" +
                 "d1580a5eaffdf2ae907ca97ceaff0235";
+
         handler = new Handler(msg -> {
             if (msg.what == 0) {
                 json_string = json.toString();
                 Gson gson = new Gson();
                 Overall raw = gson.fromJson(json_string, Overall.class);
+                String address = raw.getCity().getName();
                 for (int i = 0; i < raw.getList().size(); i++) {
-                    Weather w = new Weather();
                     List list = raw.getList().get(i);
+                    rm.saveDatabase(list,address);
+                    Weather w = new Weather();
                     w.setTemp(list.getMain().getTemp());
                     w.setFeels(list.getMain().getFeelsLike());
                     w.setWeather(list.getDetail().get(0).getMain());
@@ -70,10 +91,11 @@ public class GetApiValueToArray  {
                     w.setDate(list.getDt());
                     w.setTime(list.getDt());
                     w.setIcon(list.getDetail().get(0).getIcon());
-                    w.setAddress(raw.getCity().getName());
+                    w.setAddress(address);
                     w.setHumidity(list.getMain().getHumidity());
                     weatherForecast.add(w);
                 }
+
                 Log.d("success message", "  finished");
                 wcallback.WeatherForecast(weatherForecast);
             }
@@ -104,6 +126,12 @@ public class GetApiValueToArray  {
         }).start();
     }
 
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
 
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
 }
 

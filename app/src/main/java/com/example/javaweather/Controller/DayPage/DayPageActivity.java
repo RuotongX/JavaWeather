@@ -36,6 +36,9 @@ import com.example.javaweather.R;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 
 public class DayPageActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecallInterface, LocationListener {
     private ArrayList<Weather> weatherForecast, daysForecast = new ArrayList<>();
@@ -47,12 +50,16 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     private ImageView weather_iv;
     private ImageButton hourDetail_ib;
     private ProgressBar loading_bar;
+    private GetApiValueToArray getApi;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Realm.init(this);
+        RealmConfiguration configuration = new RealmConfiguration.Builder().name("Realm.Database.Weather").build();
+        Realm.setDefaultConfiguration(configuration);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView);
         date_tv = findViewById(R.id.date_tv);
@@ -62,7 +69,11 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         weather_iv = findViewById(R.id.weather_iv);
         hourDetail_ib = findViewById(R.id.detail_ib);
         loading_bar = findViewById(R.id.loading_bar);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
+        recyclerView.setOnTouchListener((v, event) -> true);
+
+        getApi = new GetApiValueToArray(DayPageActivity.this);
 
         if(ActivityCompat.checkSelfPermission(DayPageActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(DayPageActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 100);
@@ -70,7 +81,6 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
 
         getLocation();
 
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.teal_200));
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray_background));
         swipeRefreshLayout.setProgressViewOffset(true,10,200);
@@ -215,10 +225,11 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
 
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-
         String lat = String.valueOf(latitude);
         String lon = String.valueOf(longitude);
-        new GetApiValueToArray(lat, lon, DayPageActivity.this);
+        getApi.setLat(lat);
+        getApi.setLon(lon);
+        getApi.RefreshData();
 //       If need to use more address information, the following code would be useful.
 
 //        Geocoder geocoder = new Geocoder(DayPageActivity.this, Locale.getDefault());
