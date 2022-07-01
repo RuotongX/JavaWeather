@@ -42,8 +42,8 @@ import io.realm.RealmConfiguration;
 
 
 public class DayPageActivity extends AppCompatActivity implements ArrayGetter, HourRequestRecallInterface, LocationListener {
-    private ArrayList<Weather> weatherForecast, daysForecast = new ArrayList<>();
-    private ArrayList<ArrayList<Weather>> hoursForecast = new ArrayList<>();
+    private ArrayList<Weather> weatherForecast, daysForecast;
+    private ArrayList<ArrayList<Weather>> hoursForecast;
     private LocationManager locationManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -52,16 +52,20 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     private ImageButton hourDetail_ib;
     private ProgressBar loading_bar;
     private GetApiValueToArray getApi;
+    private  DayAdapter adapter;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder().name("Realm.Database.Weather").build();
         Realm.setDefaultConfiguration(configuration);
-        setContentView(R.layout.activity_main);
+        weatherForecast = new ArrayList<>();
+        daysForecast = new ArrayList<>();
+        hoursForecast = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
         date_tv = findViewById(R.id.date_tv);
         address_tv = findViewById(R.id.address_tv);
@@ -73,6 +77,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         recyclerView.setOnTouchListener((v, event) -> true);
         hourDetail_ib.setClickable(false);
+        setAdapter();
 
         getApi = new GetApiValueToArray(DayPageActivity.this);
         if(isNetworkConnected()==false){
@@ -128,7 +133,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     }
 
     private void setAdapter() {
-        DayAdapter adapter = new DayAdapter(daysForecast, DayPageActivity.this);
+        adapter = new DayAdapter(daysForecast, DayPageActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -150,12 +155,13 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
             return;
         }
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) DayPageActivity.this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) DayPageActivity.this);
 
     }
 
     //Transfer the weather list into Days(Arraylist) of Weather structure.
     public void getDaysWeather() {
+        daysForecast.clear();
         String preDate = weatherForecast.get(0).getDate();
         for (int i = 0; i < weatherForecast.size(); i++) {
             if (!preDate.equals(weatherForecast.get(i).getDate())) {
@@ -170,6 +176,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     // Transfer the weather list into Days(ArrayList) Hour(Arraylist) of Weather structure.
     // For example, there are 7 days in a week(Arraylist), each days have 24 hours(Arraylist), each hour has a Weather data.
     public void getHoursWeather() {
+        hoursForecast.clear();
         String preDate = weatherForecast.get(0).getDate();
         ArrayList<Weather> dayStorage = new ArrayList<>();
         for (int i = 0; i < weatherForecast.size(); i++) {
@@ -219,7 +226,8 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         swipeRefreshLayout.setRefreshing(false);
         //Once refreshing done, recyclerView should be able to interact.
         recyclerView.setOnTouchListener((v, event) -> false);
-        setAdapter();
+//        recyclerView.getRecycledViewPool().clear();
+        adapter.notifyDataSetChanged();
         hourDetail_ib.setClickable(true);
 
 
@@ -242,11 +250,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         double longitude = location.getLongitude();
         String lat = String.valueOf(latitude);
         String lon = String.valueOf(longitude);
-        if(weatherForecast.size()!=0){
-            daysForecast.clear();
-            hoursForecast.clear();
-            weatherForecast.clear();
-        }
+
         getApi.setLat(lat);
         getApi.setLon(lon);
         getApi.RefreshData();

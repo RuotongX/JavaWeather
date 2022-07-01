@@ -1,6 +1,7 @@
 package com.example.javaweather.Model.Database;
 
 import com.example.javaweather.Model.Converter.List;
+import com.example.javaweather.Model.Converter.Overall;
 import com.example.javaweather.Model.Weather;
 
 import java.util.ArrayList;
@@ -16,18 +17,21 @@ public class RealmManager {
         realm = Realm.getDefaultInstance();
     }
 
-    public void saveDatabase(List instance, String address){
+    public void saveDatabase(Overall raw){
         realm.executeTransactionAsync(new Realm.Transaction(){
             @Override
             public void execute(Realm realm) {
-                WeatherRealm wr = realm.createObject(WeatherRealm.class,instance.getDt());
-                wr.setTemp(instance.getMain().getTemp());
-                wr.setFeels(instance.getMain().getFeelsLike());
-                wr.setWeather(instance.getDetail().get(0).getMain());
-                wr.setDescription(instance.getDetail().get(0).getDescription());
-                wr.setIcon(instance.getDetail().get(0).getIcon());
-                wr.setAddress(address);
-                wr.setHumidity(instance.getMain().getHumidity());
+                for(int i = 0; i < raw.getList().size(); i++){
+                    List instance = raw.getList().get(i);
+                    WeatherRealm wr = realm.createObject(WeatherRealm.class,instance.getDt());
+                    wr.setTemp(instance.getMain().getTemp());
+                    wr.setFeels(instance.getMain().getFeelsLike());
+                    wr.setWeather(instance.getDetail().get(0).getMain());
+                    wr.setDescription(instance.getDetail().get(0).getDescription());
+                    wr.setIcon(instance.getDetail().get(0).getIcon());
+                    wr.setAddress(raw.getCity().getName());
+                    wr.setHumidity(instance.getMain().getHumidity());
+                }
             }
         });
     }

@@ -1,28 +1,23 @@
 package com.example.javaweather.Model;
 
 
-import android.Manifest;
+
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+
 import android.os.Build;
-import android.os.Bundle;
+
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+
 import android.util.Log;
 
-import androidx.annotation.NonNull;
+
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
+
 
 import com.example.javaweather.Model.Converter.List;
 import com.example.javaweather.Model.Converter.Overall;
 import com.example.javaweather.Model.Database.RealmManager;
-import com.example.javaweather.Model.Database.WeatherRealm;
+
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -30,12 +25,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.Collections;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 
 public class GetApiValueToArray  {
@@ -84,13 +76,9 @@ public class GetApiValueToArray  {
                 json_string = json.toString();
                 Gson gson = new Gson();
                 Overall raw = gson.fromJson(json_string, Overall.class);
-                String address = raw.getCity().getName();
                 weatherForecast.clear();
                 for (int i = 0; i < raw.getList().size(); i++) {
                     List list = raw.getList().get(i);
-
-                    rm.saveDatabase(list, address);
-
                     Weather w = new Weather();
                     w.setTemp(list.getMain().getTemp());
                     w.setFeels(list.getMain().getFeelsLike());
@@ -99,11 +87,11 @@ public class GetApiValueToArray  {
                     w.setDate(list.getDt());
                     w.setTime(list.getDt());
                     w.setIcon(list.getDetail().get(0).getIcon());
-                    w.setAddress(address);
+                    w.setAddress(raw.getCity().getName());
                     w.setHumidity(list.getMain().getHumidity());
                     weatherForecast.add(w);
                 }
-
+                rm.saveDatabase(raw);
                 Log.d("success message", "  finished");
                 wcallback.WeatherForecast(weatherForecast);
             }
