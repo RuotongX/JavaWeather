@@ -19,7 +19,7 @@ public class Overall {
     private Long cnt;
     @SerializedName("list")
     @Expose
-    private java.util.List<List> list = null;
+    private java.util.List<WeatherListApi> list = null;
     @SerializedName("city")
     @Expose
     private City city;
@@ -48,11 +48,11 @@ public class Overall {
         this.cnt = cnt;
     }
 
-    public java.util.List<List> getList() {
+    public java.util.List<WeatherListApi> getList() {
         return list;
     }
 
-    public void setList(java.util.List<List> list) {
+    public void setList(java.util.List<WeatherListApi> list) {
         this.list = list;
     }
 

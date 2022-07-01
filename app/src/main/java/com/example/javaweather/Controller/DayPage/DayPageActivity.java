@@ -22,8 +22,6 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +30,7 @@ import android.widget.TextView;
 
 import com.example.javaweather.Controller.HourPage.HoursPageActivity;
 import com.example.javaweather.Model.*;
+import com.example.javaweather.Model.Retrofit.GetApiValueToArray;
 import com.example.javaweather.R;
 
 
@@ -52,7 +51,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
     private ImageButton hourDetail_ib;
     private ProgressBar loading_bar;
     private GetApiValueToArray getApi;
-    private  DayAdapter adapter;
+    private DayAdapter adapter;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -80,13 +79,13 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         setAdapter();
 
         getApi = new GetApiValueToArray(DayPageActivity.this);
-        if(isNetworkConnected()==false){
+        if (isNetworkConnected() == false) {
             //If detect network connection is false, all the elements should be interacted with. (Locking them is because once data refreshing, the new data would replace old data.)
             recyclerView.setOnTouchListener((v, event) -> false);
             hourDetail_ib.setClickable(true);
-        } else{
-            if(ActivityCompat.checkSelfPermission(DayPageActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(DayPageActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        } else {
+            if (ActivityCompat.checkSelfPermission(DayPageActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(DayPageActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
             }
 
             getLocation();
@@ -95,16 +94,16 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
 
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.teal_200));
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray_background));
-        swipeRefreshLayout.setProgressViewOffset(true,10,200);
+        swipeRefreshLayout.setProgressViewOffset(true, 10, 200);
         swipeRefreshLayout.setDistanceToTriggerSync(200);
-        swipeRefreshLayout.setOnRefreshListener(()-> {
-                if(isNetworkConnected()==false){
-                    return;
-                }
-                //While refreshing the recyclerView should been disable, because data in recyclerView is changing, if user interact with them, it would return non pointer exception.
-                recyclerView.setOnTouchListener((v, event) -> true);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isNetworkConnected() == false) {
+                return;
+            }
+            //While refreshing the recyclerView should been disable, because data in recyclerView is changing, if user interact with them, it would return non pointer exception.
+            recyclerView.setOnTouchListener((v, event) -> true);
 
-                getLocation();
+            getLocation();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -112,7 +111,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
                 super.onScrollStateChanged(recyclerView, newState);
                 //While user swipe recyclerview, the refresh function has been disable to prevent mistake refreshing.
                 //The top if function is to prevent the system already in refreshing state, the disable command would make refreshing icon disappear.
-                if(!swipeRefreshLayout.isRefreshing()){
+                if (!swipeRefreshLayout.isRefreshing()) {
                     if (newState != RecyclerView.SCROLL_STATE_IDLE) {
                         swipeRefreshLayout.setEnabled(false);
                     } else {
@@ -226,7 +225,7 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
         swipeRefreshLayout.setRefreshing(false);
         //Once refreshing done, recyclerView should be able to interact.
         recyclerView.setOnTouchListener((v, event) -> false);
-//        recyclerView.getRecycledViewPool().clear();
+//      Refresh recycler View data.
         adapter.notifyDataSetChanged();
         hourDetail_ib.setClickable(true);
 
@@ -265,6 +264,6 @@ public class DayPageActivity extends AppCompatActivity implements ArrayGetter, H
 //        }
         locationManager.removeUpdates(this);
 
-        }
+    }
 }
 

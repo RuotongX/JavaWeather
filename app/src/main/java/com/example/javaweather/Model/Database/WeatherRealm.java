@@ -19,9 +19,6 @@ public class WeatherRealm extends RealmObject {
         return timeCode;
     }
 
-    public void setTimeCode(long timeCode) {
-        this.timeCode = timeCode;
-    }
 
     public double getTemp() {
         return temp;
